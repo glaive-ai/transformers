@@ -247,6 +247,7 @@ class GenerationConfig(PushToHubMixin):
 
         # Parameters for manipulation of the model output logits
         self.temperature = kwargs.pop("temperature", 1.0)
+        self.logit_bias = kwargs.pop("logit_bias", None)
         self.top_k = kwargs.pop("top_k", 50)
         self.top_p = kwargs.pop("top_p", 1.0)
         self.typical_p = kwargs.pop("typical_p", 1.0)

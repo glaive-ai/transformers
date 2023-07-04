@@ -61,6 +61,7 @@ from .logits_process import (
     SuppressTokensAtBeginLogitsProcessor,
     SuppressTokensLogitsProcessor,
     TemperatureLogitsWarper,
+    LogitBiasWarper,
     TopKLogitsWarper,
     TopPLogitsWarper,
     TypicalLogitsWarper,
@@ -807,6 +808,8 @@ class GenerationMixin:
         # all samplers can be found in `generation_utils_samplers.py`
         if generation_config.temperature is not None and generation_config.temperature != 1.0:
             warpers.append(TemperatureLogitsWarper(generation_config.temperature))
+        if generation_config.logit_bias is not None:
+            warpers.append(LogitBiasWarper(generation_config.logit_bias))
         min_tokens_to_keep = 2 if generation_config.num_beams > 1 else 1
         if generation_config.top_k is not None and generation_config.top_k != 0:
             warpers.append(TopKLogitsWarper(top_k=generation_config.top_k, min_tokens_to_keep=min_tokens_to_keep))

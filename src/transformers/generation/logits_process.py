@@ -181,6 +181,25 @@ class TemperatureLogitsWarper(LogitsWarper):
     def __call__(self, input_ids: torch.Tensor, scores: torch.Tensor) -> torch.FloatTensor:
         scores = scores / self.temperature
         return scores
+    
+
+class LogitBiasWarper(LogitsWarper):
+
+    def __init__(self, logit_bias: dict):
+        if not isinstance(logit_bias, dict):
+            raise ValueError(f"`logit_bias` has to be a dict, but is {logit_bias}")
+
+        self.logit_bias = logit_bias
+
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
+        try:
+            for token,bias in self.logit_bias.items():
+                token = int(token)
+                scores[0][token] += bias
+        except:
+            print("Couldn't apply logit bias, token out of vocab index")
+
+        return scores
 
 
 class RepetitionPenaltyLogitsProcessor(LogitsProcessor):
